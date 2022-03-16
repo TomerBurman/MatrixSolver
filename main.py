@@ -101,6 +101,7 @@ def matrix_solver(matrix):
                     print("=====================================")
                     break
             if not found_pivot:  # if pivot not found
+                print("The matrix has unlimited number of solutions")
                 return None  # Matrix has no answer
         e_matrix = i_matrix_gen(n, m)
         e_matrix[row][row] *= 1 / pivot  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
@@ -114,6 +115,26 @@ def matrix_solver(matrix):
 
             matrix = mul_matrix(e_matrix, matrix)
             print("=====================================")
+    # Till here we should have upper triangular matrix with pivots equal to 1
+    for row in range(n - 1, -1, -1):
+        pivot = matrix[row][row]  # taking pivot
+        column = row  # taking column that being worked on
+        # Setting every element before pivot to 0 in the same column
+        for row2 in range(row - 1, -1, -1):
+            e_matrix = i_matrix_gen(n, m)
+            e_matrix[row2][column] = -matrix[row2][column]
+
+            matrix = mul_matrix(e_matrix, matrix)
+            print("=====================================")
+
+    # At this point we should have I matrix with the solutions
+
+    # Save the solutions to an array and return them
+    sol = []
+    for i in range(n):
+        sol.append(matrix[i][m - 1])
+    return sol
 
 
-matrix_solver([[1, 2, 3, 0], [5, 6, 7, 0], [8, 9, 10, 0]])
+sol = matrix_solver([[1, 1, -2, 7], [2, -1, 1, 0], [1, 1, -1, 6]])
+print(f'The solution is: {sol}')
