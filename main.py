@@ -70,8 +70,10 @@ def print_matrix(mat):
     Prints the matrix
     :param mat: The matrix
     :return: None
+
     """
     width, height = find_matrix_size(mat)
+    print("Elementary matrix") if width == height else print("A:")
     for i in range(height):
         if width == height:
             print(mat[i])
@@ -117,10 +119,26 @@ def matrixSolver(matrix):
             e_matrix = i_matrix_gen(n, m)
             e_matrix[row2][column] = -matrix[row2][column]
 
-                print_matrix(e_matrix)
-                print_matrix(matrix)
-                matrix = mul_matrix(e_matrix, matrix)
-                print_matrix(matrix)
-                print("=====================================")
+            print_matrix(e_matrix)
+            print_matrix(matrix)
+            matrix = mul_matrix(e_matrix, matrix)
+            print_matrix(matrix)
+            print("=====================================")
+
+        # from this point we have an upper Triangular matrix
+    column = n - 1
+    while column > 0:
+        row = column - 1
+        while row >= 0:
+            e_matrix = i_matrix_gen(n, m)
+            e_matrix[row][column] = -matrix[row][column]
+            print_matrix(e_matrix)
+            print_matrix(matrix)
+            matrix = mul_matrix(e_matrix, matrix)
+            print_matrix(matrix)
+            print("=====================================")
+            row -= 1
+        column -= 1
+
 
 matrixSolver([[0.913, 0.659, 0.255], [0.457, 0.330, 0.126]])
