@@ -30,7 +30,7 @@ def i_matrix_gen(e_width, e_height):
 
 def mul_matrix(mat_a, mat_b):
     """
-    Multiplies two given matrixes
+    Multiplies two given matrices ( Prints the matrices before the multiplication and after the multiplication )
     https://www.geeksforgeeks.org/python-program-multiply-two-matrices/
     :param mat_a: Matrix A
     :param mat_b: Matrix B
@@ -45,6 +45,10 @@ def mul_matrix(mat_a, mat_b):
     width_a, height_a = find_matrix_size(mat_a)
     width_b, height_b = find_matrix_size(mat_b)
 
+    # Print the matrices before the multiplication
+    print_matrix(mat_a)
+    print_matrix(mat_b)
+
     if width_a != height_b:  # check if the matrix can be multiplied.
         return False
     else:
@@ -53,6 +57,7 @@ def mul_matrix(mat_a, mat_b):
             for j in range(width_b):
                 for k in range(height_b):
                     new_matrix[i][j] += mat_a[i][k] * mat_b[k][j]
+        print_matrix(new_matrix)  # Print the matrix after the multiplication
         return new_matrix
 
 
@@ -92,10 +97,7 @@ def matrix_solver(matrix):
                     found_pivot = True
                     e_matrix = exchange(matrix, row,
                                         row2)  # function that changes lines of row and c_row in 2dim matrix.
-                    print_matrix(e_matrix)
-                    print_matrix(matrix)
                     matrix = mul_matrix(e_matrix, matrix)  # lines changed.
-                    print_matrix(matrix)
                     print("=====================================")
                     break
             if not found_pivot:  # if pivot not found
@@ -103,20 +105,14 @@ def matrix_solver(matrix):
         e_matrix = i_matrix_gen(n, m)
         e_matrix[row][row] *= 1 / pivot  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
 
-        print_matrix(e_matrix)
-        print_matrix(matrix)
         matrix = mul_matrix(e_matrix, matrix)  # setting pivot to 1
-        print_matrix(matrix)
         print("=====================================")
         # Setting every element after pivot to 0 in the same column
         for row2 in range(row + 1, n):
             e_matrix = i_matrix_gen(n, m)
             e_matrix[row2][column] = -matrix[row2][column]
 
-            print_matrix(e_matrix)
-            print_matrix(matrix)
             matrix = mul_matrix(e_matrix, matrix)
-            print_matrix(matrix)
             print("=====================================")
 
 
