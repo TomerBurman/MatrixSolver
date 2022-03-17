@@ -1,3 +1,6 @@
+from fractions import Fraction
+
+
 def exchange(matrix, row, row2):
     """
     Exchanges two rows in the matrix and returns new e_matrix to multiply the original in
@@ -78,7 +81,12 @@ def print_matrix(mat):
     """
     width, height = find_matrix_size(mat)
     for i in range(height):
-        print(mat[i])
+        print('[', end='')
+        for j in range(width):
+            if j + 1 == width:
+                print(mat[i][j], end=']\n')
+            else:
+                print(mat[i][j], end=", ")
 
 
 def matrix_solver(matrix):
@@ -104,7 +112,7 @@ def matrix_solver(matrix):
                 print("The matrix has unlimited number of solutions")
                 return None  # Matrix has no answer
         e_matrix = i_matrix_gen(n, m)
-        e_matrix[row][row] *= 1 / pivot  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
+        e_matrix[row][row] *= Fraction(1, pivot)  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
 
         matrix = mul_matrix(e_matrix, matrix)  # setting pivot to 1
         print("=====================================")
@@ -137,4 +145,6 @@ def matrix_solver(matrix):
 
 
 sol = matrix_solver([[1, 1, -2, 7], [2, -1, 1, 0], [1, 1, -1, 6]])
-print(f'The solution is: {sol}')
+print('The solution is: ', end='')
+for i in range(len(sol)):
+    print(f'X{i} : {sol[i]}, ', end=' ')
