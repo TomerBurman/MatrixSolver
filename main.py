@@ -1,6 +1,3 @@
-from fractions import Fraction
-
-
 def exchange(matrix, row, row2):
     """
     Exchanges two rows in the matrix and returns new e_matrix to multiply the original in
@@ -95,11 +92,13 @@ def matrix_solver(matrix):
         return None
     e_matrix = i_matrix_gen(n, m)  # Elementary matrix keeper which will be I at the end.
     for row in range(n):  # for every row in rows
+        #   RUNTIME: O(n)
         pivot = matrix[row][row]  # taking pivot
         column = row  # taking column that being worked on
         if pivot == 0:  # in case pivot is 0
             found_pivot = False  # if we found the pivot flag
             for row2 in range(row + 1, n):  # searching for line with pivot not 0 from current line to last
+                #   RUNTIME: O(n)
                 pivot = matrix[row2][column]  # taking pivot
                 if pivot != 0:  # if pivot found break
                     found_pivot = True
@@ -112,12 +111,13 @@ def matrix_solver(matrix):
                 print("The matrix has unlimited number of solutions")
                 return None  # Matrix has no answer
         e_matrix = i_matrix_gen(n, m)
-        e_matrix[row][row] *= Fraction(1, pivot)  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
+        e_matrix[row][row] *= 1/pivot  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
 
         matrix = mul_matrix(e_matrix, matrix)  # setting pivot to 1
         print("=====================================")
         # Setting every element after pivot to 0 in the same column
         for row2 in range(row + 1, n):
+            #   RUNTIME: O(n)
             e_matrix = i_matrix_gen(n, m)
             e_matrix[row2][column] = -matrix[row2][column]
 
@@ -125,16 +125,19 @@ def matrix_solver(matrix):
             print("=====================================")
     # Till here we should have upper triangular matrix with pivots equal to 1
     for row in range(n - 1, -1, -1):
+        #   RUNTIME: O(n)
         pivot = matrix[row][row]  # taking pivot
         column = row  # taking column that being worked on
         # Setting every element before pivot to 0 in the same column
         for row2 in range(row - 1, -1, -1):
+            #   RUNTIME: O(n)
             e_matrix = i_matrix_gen(n, m)
             e_matrix[row2][column] = -matrix[row2][column]
 
             matrix = mul_matrix(e_matrix, matrix)
             print("=====================================")
 
+    # TOTAL RUNTIME: O( n*(n+n) + n*n ) = O(2n^2) = O(n^2)
     # At this point we should have I matrix with the solutions
 
     # Save the solutions to an array and return them
@@ -144,7 +147,7 @@ def matrix_solver(matrix):
     return sol
 
 
-sol = matrix_solver([[1, 1, -2, 7], [2, -1, 1, 0], [1, 1, -1, 6]])
+sol = matrix_solver([[0.913, 0.659, 0.254], [0.457, 0.330, 0.127]])
 print('The solution is: ', end='')
 for i in range(len(sol)):
     print(f'X{i} : {sol[i]}, ', end=' ')
