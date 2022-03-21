@@ -165,7 +165,7 @@ def rearange_max_pivots(mat):
         pivot = mat[col][col]
         max_index = col
         for row in range(col, n):  # Find max pivot in current column
-            if mat[row][col] > pivot:
+            if abs(mat[row][col]) > abs(pivot):
                 pivot = mat[row][col]
                 max_index = row
         if pivot != mat[col][col]:
