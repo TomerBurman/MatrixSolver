@@ -11,7 +11,7 @@ def exchange(matrix, row, row2):
     return e_matrix
 
 
-def i_matrix_gen(e_width, e_height):
+def i_matrix_gen(e_height, e_width):
     """
     Generates I matrix
     :param e_width: Matrix columns
@@ -19,7 +19,7 @@ def i_matrix_gen(e_width, e_height):
     :return: I Matrix
     """
     i = 0
-    e_height -= 1  # Remove the rightmost column (    | ) <----
+    e_width -= 1  # Remove the rightmost column (    | ) <----
 
     I = [[0 for i in range(e_width)] for j in range(e_height)]
     while i < e_width and i < e_height:
@@ -32,6 +32,7 @@ def mul_matrix(mat_a, mat_b):
     """
     Multiplies two given matrices ( Prints the matrices before the multiplication and after the multiplication )
     https://www.geeksforgeeks.org/python-program-multiply-two-matrices/
+    mat_a X mat_b
     :param mat_a: Matrix A
     :param mat_b: Matrix B
     :return: Multiplied Matrix /False if can't be multiplied
@@ -42,12 +43,12 @@ def mul_matrix(mat_a, mat_b):
                             [   11  12  ]
     ----------------------------------------------------------
     """
-    width_a, height_a = find_matrix_size(mat_a)
-    width_b, height_b = find_matrix_size(mat_b)
+    height_a, width_a = find_matrix_size(mat_a)
+    height_b, width_b = find_matrix_size(mat_b)
 
     # Print the matrices before the multiplication
-    print_matrix(mat_a)
-    print_matrix(mat_b)
+    print_matrix(mat_a, "\tMatrix A:")
+    print_matrix(mat_b, "\tMatrix B:")
 
     if width_a != height_b:  # check if the matrix can be multiplied.
         return False
@@ -57,37 +58,43 @@ def mul_matrix(mat_a, mat_b):
             for j in range(width_b):
                 for k in range(height_b):
                     new_matrix[i][j] += mat_a[i][k] * mat_b[k][j]
-        print_matrix(new_matrix)  # Print the matrix after the multiplication
+        print_matrix(new_matrix, "\tSolved Matrix (A x B):")  # Print the matrix after the multiplication
         return new_matrix
 
 
 def find_matrix_size(mat):
     """
     Finds the matrix size
+      -------M------
+    | (           )
+    N (           )
+    | (           )
     :param mat: Given matrix
     :return: Size of the matrix in width, height
     """
-    return len(mat[0]), len(mat)
+    return len(mat), len(mat[0])  # n , m
 
 
-def print_matrix(mat):
+def print_matrix(mat, message=None):
     """
     Prints the matrix
     :param mat: The matrix
     :return: None
     """
-    width, height = find_matrix_size(mat)
+    if message:
+        print(f'\n{message}')
+    height, width = find_matrix_size(mat)
     for i in range(height):
         print('[', end='')
         for j in range(width):
             if j + 1 == width:
-                print(mat[i][j], end=']\n')
+                print(f'{mat[i][j]}', end=']\n')
             else:
-                print(mat[i][j], end=", ")
+                print(f'{mat[i][j]}', end=", ")
 
 
 def matrix_solver(matrix):
-    m, n = find_matrix_size(matrix)
+    n, m = find_matrix_size(matrix)
     if m != n + 1:  # if matrix is not square. extra column is for solution vector
         return None
     e_matrix = i_matrix_gen(n, m)  # Elementary matrix keeper which will be I at the end.
@@ -111,7 +118,7 @@ def matrix_solver(matrix):
                 print("The matrix has unlimited number of solutions")
                 return None  # Matrix has no answer
         e_matrix = i_matrix_gen(n, m)
-        e_matrix[row][row] *= 1/pivot  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
+        e_matrix[row][row] *= 1 / pivot  # elementry matrix is now 1 / pivot to set pivot to 1 when multiplied.
 
         matrix = mul_matrix(e_matrix, matrix)  # setting pivot to 1
         print("=====================================")
@@ -147,7 +154,29 @@ def matrix_solver(matrix):
     return sol
 
 
-sol = matrix_solver([[0.913, 0.659, 0.254], [0.457, 0.330, 0.127]])
+def rearange_max_pivots(mat):
+    """
+    Rearange the pivots in the matrix so that the pivots will be the max in the column ( in absolute value )
+    :param mat: The matrix that we want to change
+    :return: new matrix with the changed rows
+    """
+    n, m = find_matrix_size(mat)
+    for col in range(m - 1):
+        pivot = mat[col][col]
+        max_index = col
+        for row in range(col, n):  # Find max pivot in current column
+            if mat[row][col] > pivot:
+                pivot = mat[row][col]
+                max_index = row
+        if pivot != mat[col][col]:
+            e_mat = exchange(mat, col, max_index)
+            mat = mul_matrix(e_mat, mat)
+    return mat
+
+mat = rearange_max_pivots([[0.457, 0.330, 0.127],[0.913, 0.659, 0.254]])
+print("==================REARANGED THE MATRIX=====================")
+print("==================STARTING THE SOLUTION====================")
+sol = matrix_solver(mat)
 print('The solution is: ', end='')
 for i in range(len(sol)):
     print(f'X{i} : {sol[i]}, ', end=' ')
